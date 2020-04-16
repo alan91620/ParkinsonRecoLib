@@ -1,16 +1,14 @@
-
-#RecognitionLib.py
-
 import joblib
 import parselmouth
 from parselmouth.praat import call
 import pandas as pd
 import numpy as np
+import sklearn
 
-clf = None
 
-def loadModel():
-    clf = joblib.load("trainedModel.sav")
+def loadModel(PATH):
+    clf = joblib.load(PATH)
+    return clf
 
 def measurePitch(voiceID, f0min, f0max, unit):
     sound = parselmouth.Sound(voiceID) # read the sound
@@ -38,7 +36,7 @@ def measurePitch(voiceID, f0min, f0max, unit):
     return localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer, apq11Shimmer, hnr05, hnr15 ,hnr25 ,hnr35 ,hnr38
 
 
-def predict(wav):
+def predict(clf, wavPath):
     file_list = []
     localJitter_list = []
     localabsoluteJitter_list = []
@@ -55,7 +53,7 @@ def predict(wav):
     hnr35_list = []
     hnr38_list = []
 
-    sound = parselmouth.Sound(wav)
+    sound = parselmouth.Sound(wavPath)
     (localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer,
      apq11Shimmer, hnr05, hnr15, hnr25, hnr35, hnr38) = measurePitch(sound, 75, 1000, "Hertz")
     localJitter_list.append(localJitter)  # make a mean F0 list
@@ -80,4 +78,11 @@ def predict(wav):
                          columns=["Jitter_rel", "Jitter_abs", "Jitter_RAP", "Jitter_PPQ", "Shim_loc", "Shim_dB",
                                   "Shim_APQ3", "Shim_APQ5", "Shi_APQ11", "hnr05", "hnr15",
                                   "hnr25"])  # add these lists to pandas in the right order
-    return clf.predict(toPred)
+
+    resp = clf.predict(toPred)
+    resp = str(resp)
+
+    if resp == "[1.]":
+        return True
+    else:
+        return False
