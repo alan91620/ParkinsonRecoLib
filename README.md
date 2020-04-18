@@ -6,6 +6,7 @@ Project also include jupyter notebook to build dataset, train and export model.
 Our project use classification through Linear Regression
 
 We built our dataset by measuring localJjitter ; absoluteJitter ; RAPJitter ; JitterPPQ ; localShimmer ; localShimmer dB ; Shimmer APQ3 ; Shimmer APQ5 ; Shimmer APQ11 ; hnr05 ; hnr15 ; hnr25 on many WAV audio file of healthy and parkinson patients. https://zenodo.org/record/2867216#.XpuGXsgzaUl
+
 Measure was taken with parselmouth which is a python module for audio measuring. https://parselmouth.readthedocs.io/en/stable/
 
 Once dataset created and model trained we used a cross validation test wich gave us ~0,7% of accuracy
